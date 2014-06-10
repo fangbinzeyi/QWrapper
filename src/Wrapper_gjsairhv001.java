@@ -205,8 +205,8 @@ public class Wrapper_gjsairhv001 implements QunarCrawler {
 													retsegs.add(retseg);
 													
 													baseFlight.setInfo(segs);
-													flightDetail.setPrice(Math.round(Double.parseDouble(price)+Double.parseDouble(retprice)-Double.parseDouble("51.81")));
-													flightDetail.setTax(Double.parseDouble("61.81"));
+													flightDetail.setPrice(Math.round(Double.parseDouble(price)+Double.parseDouble(retprice)+10));
+													flightDetail.setTax(0);
 													baseFlight.setDetail(flightDetail);
 													baseFlight.setOutboundPrice(Math.round(Double.parseDouble(price.substring(1))));
 													baseFlight.setRetinfo(retsegs);
@@ -238,10 +238,10 @@ public class Wrapper_gjsairhv001 implements QunarCrawler {
 	}
 	public static void main(String[] args) {
 		FlightSearchParam searchParam = new FlightSearchParam();
-		searchParam.setDep("BRI");
-		searchParam.setArr("AMS");
-		searchParam.setDepDate("2014-08-28");
-		searchParam.setRetDate("2014-08-30");
+		searchParam.setDep("VCE");
+		searchParam.setArr("EIN");
+		searchParam.setDepDate("2014-06-19");
+		searchParam.setRetDate("2014-06-21");
 		searchParam.setTimeOut("60000");
 		searchParam.setWrapperid("gjsairhv001");
 		searchParam.setToken("");

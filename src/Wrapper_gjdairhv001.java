@@ -166,15 +166,14 @@ public class Wrapper_gjdairhv001 implements QunarCrawler{
 							seg.setDeptime(flightdeptime);
 							seg.setArrtime(flightarrtime);
 							segs.add(seg);
-							
 							flightDetail.setMonetaryunit("EUR");
-							flightDetail.setPrice(Math.round(Double.parseDouble(price)-Double.parseDouble("21.35")));
+							flightDetail.setPrice(Math.round(Double.parseDouble(price)+Double.parseDouble("10")));
 							flightDetail.setDepcity(arg1.getDep());
 							flightDetail.setArrcity(arg1.getArr());
 							flightDetail.setWrapperid(arg1.getWrapperid());
 							flightDetail.setDepdate(Date.valueOf(arg1.getDepDate()));
 							flightDetail.setFlightno(flightNoList);
-							flightDetail.setTax(Math.round(Double.parseDouble("22.35")));
+							flightDetail.setTax(0);
 							baseFlight.setDetail(flightDetail);
 							baseFlight.setInfo(segs);
 							flightList.add(baseFlight);
@@ -205,14 +204,13 @@ public class Wrapper_gjdairhv001 implements QunarCrawler{
 	}
 	public static void main(String[] args) {
 		FlightSearchParam searchParam = new FlightSearchParam();
-		searchParam.setDep("AMS");
-		searchParam.setArr("ATH");
-		searchParam.setDepDate("2014-06-27");
+		searchParam.setDep("RTM");
+		searchParam.setArr("MAD");
+		searchParam.setDepDate("2014-06-18");
 		searchParam.setTimeOut("60000");
 		searchParam.setWrapperid("gjdairhv001");
 		searchParam.setToken("");
 		String html = new  Wrapper_gjdairhv001().getHtml(searchParam);
-		System.out.println(html);
 		ProcessResultInfo result = new ProcessResultInfo();
 		result = new  Wrapper_gjdairhv001().process(html,searchParam);
 		if(result.isRet() && result.getStatus().equals(Constants.SUCCESS))
