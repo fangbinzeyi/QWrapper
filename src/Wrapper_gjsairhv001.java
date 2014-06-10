@@ -208,9 +208,9 @@ public class Wrapper_gjsairhv001 implements QunarCrawler {
 													flightDetail.setPrice(Math.round(Double.parseDouble(price)+Double.parseDouble(retprice)+10));
 													flightDetail.setTax(0);
 													baseFlight.setDetail(flightDetail);
-													baseFlight.setOutboundPrice(Math.round(Double.parseDouble(price.substring(1))));
+//													baseFlight.setOutboundPrice(Math.round(Double.parseDouble(price.substring(1))));
 													baseFlight.setRetinfo(retsegs);
-//													baseFlight.setRetdepdate(Date.valueOf(flightsearchparam.getRetDate()));
+													baseFlight.setRetdepdate(Date.valueOf(flightsearchparam.getRetDate()));
 													baseFlight.setRetflightno(retflightNoList);
 //												    baseFlight.setReturnedPrice(Math.round(Double.parseDouble(retprice)));
 												    flightList.add(baseFlight);
