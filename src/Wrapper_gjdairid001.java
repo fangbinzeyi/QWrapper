@@ -28,7 +28,7 @@ public class Wrapper_gjdairid001  implements QunarCrawler{
 	@Override
 	public BookingResult getBookingInfo(FlightSearchParam arg0) {
 		
-		String bookingUrlPre = "https://secure.batikair.com/BatikAirIBE/onlinebooking.aspx";
+		String bookingUrlPre = "https://secure.batikair.com/BatikAirIBE/OnlineBooking.aspx";
 		BookingResult bookingResult = new BookingResult();
 		
 		try {
