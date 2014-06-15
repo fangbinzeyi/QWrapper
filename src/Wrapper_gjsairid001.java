@@ -27,7 +27,7 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 
 	@Override
 	public BookingResult getBookingInfo(FlightSearchParam arg0) {
-		String bookingUrlPre = "https://secure.batikair.com/BatikAirIBE/onlinebooking.aspx";
+		String bookingUrlPre = "https://secure.batikair.com/BatikAirIBE/OnlineBooking.aspx";
 		BookingResult bookingResult = new BookingResult();
 		
 		try {
@@ -131,8 +131,10 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 				FlightDetail toflightDetail = new FlightDetail();
 				List<FlightSegement> tosegs = new ArrayList<FlightSegement>();
 				String[] toinfo=toflights[i].split("<td");
+				int t1=1;
 				if(toflights[i].contains("rowspan")){
 					m=Integer.parseInt(StringUtils.substringBetween(toflights[i], "rowspan=\"", "\""))-1;
+					t1=Integer.parseInt(StringUtils.substringBetween(toflights[i], "rowspan=\"", "\""));
 				}
 				String toflightNumbe=toinfo[1].substring(toinfo[1].indexOf("</div>"),toinfo[1].indexOf("</div><div")).replace("</div>", "").replace(" ","").trim();
 				String toflightdeptimeweek=toinfo[3].substring(toinfo[3].indexOf("<br />"), toinfo[3].indexOf("</td>")).replace("<br />", "");
@@ -143,28 +145,29 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 				String toflightarrtime=toflightarrtimeweek.substring(toflightarrtimeweek.indexOf(" "),toflightarrtimeweek.length()).trim();
 //				String topromoTotal="0";
 				String topromoPrice="0";
-				String topromotax="0";
+				Double topromotax=0d;
 				String tounit="";
 				if(toinfo.length>5){
+					t1=t1*10000;
 					if(!toinfo[5].contains("Sold Out")&&!toinfo[5].contains("N/A")){
 						String[] unitPrice=StringUtils.substringBetween(toinfo[5],"Base Fare:","Total").split(" ");
 						tounit=unitPrice[0].trim();
 //						topromoTotal=StringUtils.substringBetween(toinfo[5],"<br />","</label>");
 						topromoPrice=unitPrice[1].trim();
-						topromotax=StringUtils.substringBetween(toinfo[5],"Fees:","\"><input").replace(tounit, "").trim();
+						topromotax=Double.valueOf(StringUtils.substringBetween(toinfo[5],"Fees:","\"><input").replace(tounit, "").replace(",", "").trim())+t1;
 						
 					}else if(!toinfo[6].contains("Sold Out")&&!toinfo[6].contains("N/A")){
 						String[] unitPrice=StringUtils.substringBetween(toinfo[6],"Base Fare:","Total").split(" ");
 						tounit=unitPrice[0].trim();
 //						topromoTotal=StringUtils.substringBetween(toinfo[6],"<br />","</label>");
 						topromoPrice=unitPrice[1].trim();
-						topromotax=StringUtils.substringBetween(toinfo[6],"Fees:","\"><input").replace(tounit, "").trim();
+						topromotax=Double.valueOf(StringUtils.substringBetween(toinfo[6],"Fees:","\"><input").replace(tounit, "").replace(",", "").trim())+t1;
 					}else if(!toinfo[7].contains("Sold Out")&&!toinfo[7].contains("N/A")){
 						String[] unitPrice=StringUtils.substringBetween(toinfo[7],"Base Fare:","Total").split(" ");
 						tounit=unitPrice[0].trim();
 //						topromoTotal=StringUtils.substringBetween(toinfo[7],"<br />","</label>");
 						topromoPrice=unitPrice[1].trim();
-						topromotax=StringUtils.substringBetween(toinfo[7],"Fees:","\"><input").replace(tounit, "").trim();
+						topromotax=Double.valueOf(StringUtils.substringBetween(toinfo[7],"Fees:","\"><input").replace(tounit, "").replace(",", "").trim())+t1;
 					}
 					
 					FlightSegement toseg = new FlightSegement();
@@ -185,7 +188,7 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 					toflightDetail.setDepdate(Date.valueOf(arg1.getDepDate()));
 					toflightDetail.setMonetaryunit(tounit);
 					toflightDetail.setPrice(Math.round(Double.parseDouble(topromoPrice.replace(",", ""))));
-					toflightDetail.setTax((Math.round(Double.parseDouble(topromotax.replace(",", "")))));
+					toflightDetail.setTax((Math.round(topromotax)));
 					toflightDetail.setWrapperid(arg1.getWrapperid());
 					baseFlight.setDetail(toflightDetail);
 					baseFlight.setOutboundPrice(Math.round(Double.parseDouble(topromoPrice.replace(",", ""))));
@@ -222,30 +225,35 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 						String  backarrairport=StringUtils.substringBetween(backinfo[4],"(", ")");
 						String backflightdeptime=backflightdeptimeweek.substring(backflightdeptimeweek.indexOf(" "), backflightdeptimeweek.length()).trim();
 						String backflightarrtime=backflightarrtimeweek.substring(backflightarrtimeweek.indexOf(" "),backflightarrtimeweek.length()).trim();
-//						String backpromoTotal="0";
+						int t2=1;
+						if(backflights[j].contains("rowspan")){
+								t2=Integer.parseInt(StringUtils.substringBetween(backflights[j], "rowspan=\"", "\""));
+						}
+						String backpromoTotal="0";
 						String backpromoPrice="0";
-						String backpromotax="0";
+						Double backpromotax=0d;
 						String backunit="";
 						if(backinfo.length>5){
+							t2=t2*10000;
 						if(!backinfo[5].contains("Sold Out")&&!backinfo[5].contains("N/A")){
 							String[] backunitPrice=StringUtils.substringBetween(backinfo[5],"Base Fare:","Total").split(" ");
 							backunit=backunitPrice[0].trim();
 //							backpromoTotal=StringUtils.substringBetween(backinfo[5],"<br />","</label>");
 							backpromoPrice=backunitPrice[1].trim();
-							backpromotax=StringUtils.substringBetween(backinfo[5],"Fees:","\"><input").replace(backunit, "").trim();
+							backpromotax=Double.parseDouble(StringUtils.substringBetween(backinfo[5],"Fees:","\"><input").replace(backunit, "").replace(",", "").trim())+t2;
 							
 						}else if(!backinfo[6].contains("Sold Out")&&!backinfo[6].contains("N/A")){
 							String[] backunitPrice=StringUtils.substringBetween(backinfo[6],"Base Fare:","Total").split(" ");
 							backunit=backunitPrice[0].trim();
 //							backpromoTotal=StringUtils.substringBetween(backinfo[6],"<br />","</label>");
 							backpromoPrice=backunitPrice[1].trim();
-							backpromotax=StringUtils.substringBetween(backinfo[6],"Fees:","\"><input").replace(backunit, "").trim();
+							backpromotax=Double.parseDouble(StringUtils.substringBetween(backinfo[6],"Fees:","\"><input").replace(backunit, "").replace(",", "").trim())+t2;
 						}else if(!backinfo[7].contains("Sold Out")&&!backinfo[7].contains("N/A")){
 							String[] backunitPrice=StringUtils.substringBetween(backinfo[7],"Base Fare:","Total").split(" ");
 							backunit=backunitPrice[0].trim();
 //							backpromoTotal=StringUtils.substringBetween(backinfo[7],"<br />","</label>");
 							backpromoPrice=backunitPrice[1].trim();
-							backpromotax=StringUtils.substringBetween(backinfo[7],"Fees:","\"><input").replace(backunit, "").trim();
+							backpromotax=Double.parseDouble(StringUtils.substringBetween(backinfo[6],"Fees:","\"><input").replace(backunit, "").replace(",", "").trim())+t2;
 						}
 						
 						FlightSegement backseg = new FlightSegement();
@@ -264,8 +272,7 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 							goprice=baseFlight.getDetail().getPrice();
 							gotax=baseFlight.getDetail().getTax();
 							Long sumPrice=Math.round(goprice+Double.parseDouble(backpromoPrice.replace(",", "")));
-							Long sumTax=Math.round(gotax+Double.parseDouble(backpromotax.replace(",", "")));
-							System.out.println("1,sumPrice:"+sumPrice+",sumTax:"+sumTax+",total:"+Math.round(sumTax+sumPrice));
+							Long sumTax=Math.round(gotax+backpromotax);
 							baseFlight.getDetail().setPrice(sumPrice);
 							baseFlight.getDetail().setTax(sumTax);
 							baseFlight.setRetflightno(flightNoList);
@@ -275,7 +282,7 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 							
 						}else{
 							Long sumPrice=Math.round(goprice+Double.parseDouble(backpromoPrice.replace(",", "")));
-							Long sumTax=Math.round(gotax+Double.parseDouble(backpromotax.replace(",", "")));
+							Long sumTax=Math.round(gotax+backpromotax);
 							baseFlight=flightList.get(flightList.size()-1);
 							RoundTripFlightInfo backFB=new RoundTripFlightInfo();
 							FlightDetail detail=new FlightDetail();
@@ -289,7 +296,6 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 							detail.setTax(sumTax);
 							backFB.setDetail(detail);
 							backFB.setInfo(baseFlight.getInfo());
-							System.out.println("N,sumPrice:"+sumPrice+",sumTax:"+sumTax+",total:"+Math.round(sumTax+sumPrice));
 							
 							backFB.setRetdepdate(Date.valueOf(arg1.getRetDate()));
 							backFB.setRetinfo(backsegs);
@@ -324,10 +330,10 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 	}
 	public static void main(String[] args) {
 		FlightSearchParam searchParam = new FlightSearchParam();
-		searchParam.setDep("SUB");
-		searchParam.setArr("SOQ");
-		searchParam.setDepDate("2014-06-16");
-		searchParam.setRetDate("2014-06-17");
+		searchParam.setDep("AMQ");//SUB
+		searchParam.setArr("BDJ");//SOQ
+		searchParam.setDepDate("2014-06-20");
+		searchParam.setRetDate("2014-06-21");
 		searchParam.setTimeOut("60000");
 		searchParam.setWrapperid("gjsairid001");
 		searchParam.setToken("");

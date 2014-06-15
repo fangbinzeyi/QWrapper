@@ -28,7 +28,7 @@ public class Wrapper_gjdairid001  implements QunarCrawler{
 	@Override
 	public BookingResult getBookingInfo(FlightSearchParam arg0) {
 		
-		String bookingUrlPre = "https://secure.batikair.com/BatikAirIBE/onlinebooking.aspx";
+		String bookingUrlPre = "https://secure.batikair.com/BatikAirIBE/OnlineBooking.aspx";
 		BookingResult bookingResult = new BookingResult();
 		
 		try {
@@ -140,34 +140,39 @@ public class Wrapper_gjdairid001  implements QunarCrawler{
 				String flightNumbe=info[1].substring(info[1].indexOf("</div>"),info[1].indexOf("</div><div")).replace("</div>", "").replace(" ","").trim();
 				String flightdeptimeweek=info[3].substring(info[3].indexOf("<br />"), info[3].indexOf("</td>")).replace("<br />", "");
 				String flightarrtimeweek=info[4].substring(info[4].indexOf("<br />"), info[4].indexOf("</td>")).replace("<br />", "");
+				int m=1;
+				if(flights[i].contains("rowspan")){
+					m=Integer.parseInt(StringUtils.substringBetween(flights[i], "rowspan=\"", "\""));
+				}
 				String  depairport=StringUtils.substringBetween(info[3],"(", ")");
 				String  arrairport=StringUtils.substringBetween(info[4],"(", ")");
 				String flightdeptime=flightdeptimeweek.substring(flightdeptimeweek.indexOf(" "), flightdeptimeweek.length()).trim();
 				String flightarrtime=flightarrtimeweek.substring(flightarrtimeweek.indexOf(" "),flightarrtimeweek.length()).trim();
 				String promoTotal="0";
 				String promoPrice="0";
-				String promotax="0";
+				Double promotax=0d;
 				String unit="";
 				if(info.length>5){
+					m=m*10000;
 				if(!info[5].contains("Sold Out")&&!info[5].contains("N/A")){
 					String[] unitPrice=StringUtils.substringBetween(info[5],"Base Fare:","Total").split(" ");
 					unit=unitPrice[0].trim();
 					promoTotal=StringUtils.substringBetween(info[5],"<br />","</label>");
-					promoPrice=unitPrice[1].trim();
-					promotax=StringUtils.substringBetween(info[5],"Fees:","\"><input").replace(unit, "").trim();
+					promoPrice=unitPrice[1].trim().replace(",", "");
+					promotax=Double.valueOf(StringUtils.substringBetween(info[5],"Fees:","\"><input").replace(unit, "").trim().replace(",", ""))+m;
 					
 				}else if(!info[6].contains("Sold Out")&&!info[6].contains("N/A")){
 					String[] unitPrice=StringUtils.substringBetween(info[6],"Base Fare:","Total").split(" ");
 					unit=unitPrice[0].trim();
 					promoTotal=StringUtils.substringBetween(info[6],"<br />","</label>");
-					promoPrice=unitPrice[1].trim();
-					promotax=StringUtils.substringBetween(info[6],"Fees:","\"><input").replace(unit, "").trim();
+					promoPrice=unitPrice[1].trim().replace(",", "");
+					promotax=Double.valueOf(StringUtils.substringBetween(info[6],"Fees:","\"><input").replace(unit, "").trim().replace(",", ""))+m;
 				}else if(!info[7].contains("Sold Out")&&!info[7].contains("N/A")){
 					String[] unitPrice=StringUtils.substringBetween(info[7],"Base Fare:","Total").split(" ");
 					unit=unitPrice[0].trim();
 					promoTotal=StringUtils.substringBetween(info[7],"<br />","</label>");
-					promoPrice=unitPrice[1].trim();
-					promotax=StringUtils.substringBetween(info[7],"Fees:","\"><input").replace(unit, "").trim();
+					promoPrice=unitPrice[1].trim().replace(",", "");
+					promotax=Double.valueOf(StringUtils.substringBetween(info[7],"Fees:","\"><input").replace(unit, "").trim().replace(",", ""))+m;
 				}
 				
 				FlightSegement seg = new FlightSegement();
@@ -188,8 +193,8 @@ public class Wrapper_gjdairid001  implements QunarCrawler{
 				flightDetail.setArrcity(arg1.getArr());
 				flightDetail.setDepdate(Date.valueOf(arg1.getDepDate()));
 				flightDetail.setMonetaryunit(unit);
-				flightDetail.setPrice(Math.round(Double.parseDouble(promoPrice.replace(",", ""))));
-				flightDetail.setTax(Math.round(Double.parseDouble(promotax.replace(",", ""))));
+				flightDetail.setPrice(Math.round(Double.parseDouble(promoPrice)));
+				flightDetail.setTax(Math.round(promotax));
 				flightDetail.setWrapperid(arg1.getWrapperid());
 				baseFlight.setDetail(flightDetail);
 				baseFlight.setInfo(segs);
@@ -230,8 +235,8 @@ public class Wrapper_gjdairid001  implements QunarCrawler{
 	public static void main(String[] args) {
 		FlightSearchParam searchParam = new FlightSearchParam();
 		searchParam.setDep("AMQ");
-		searchParam.setArr("BPN");
-		searchParam.setDepDate("2014-06-18");
+		searchParam.setArr("BDJ");
+		searchParam.setDepDate("2014-06-20");
 		searchParam.setTimeOut("60000");
 		searchParam.setWrapperid("gjdairid001");
 		searchParam.setToken("");
