@@ -225,7 +225,7 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 						String  backarrairport=StringUtils.substringBetween(backinfo[4],"(", ")");
 						String backflightdeptime=backflightdeptimeweek.substring(backflightdeptimeweek.indexOf(" "), backflightdeptimeweek.length()).trim();
 						String backflightarrtime=backflightarrtimeweek.substring(backflightarrtimeweek.indexOf(" "),backflightarrtimeweek.length()).trim();
-						int t2=1;
+						int t2=1;//中转航班数
 						if(backflights[j].contains("rowspan")){
 								t2=Integer.parseInt(StringUtils.substringBetween(backflights[j], "rowspan=\"", "\""));
 						}
@@ -294,6 +294,7 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 							detail.setWrapperid(baseFlight.getDetail().getWrapperid());
 							detail.setPrice(sumPrice);
 							detail.setTax(sumTax);
+							detail.setFlightno(baseFlight.getDetail().getFlightno());
 							backFB.setDetail(detail);
 							backFB.setInfo(baseFlight.getInfo());
 							
@@ -330,10 +331,10 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 	}
 	public static void main(String[] args) {
 		FlightSearchParam searchParam = new FlightSearchParam();
-		searchParam.setDep("AMQ");//SUB
-		searchParam.setArr("BDJ");//SOQ
-		searchParam.setDepDate("2014-06-20");
-		searchParam.setRetDate("2014-06-21");
+		searchParam.setDep("CGK");//SUB
+		searchParam.setArr("SUB");//SOQ
+		searchParam.setDepDate("2014-07-24");
+		searchParam.setRetDate("2014-07-28");
 		searchParam.setTimeOut("60000");
 		searchParam.setWrapperid("gjsairid001");
 		searchParam.setToken("");
