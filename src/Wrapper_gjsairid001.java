@@ -73,8 +73,8 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 		String backddmm=backdeptDate[2]+backdeptDate[1];
 		
 		String getUrl = String.format("https://secure.batikair.com/BatikAirIBE/onlinebooking.aspx?trip_type=return&persons.0=1&persons.1=0&persons.2=0&depart=%s&dest.1=%s&date.0=%s&date.1=%s&origin=EN&usercountry=ID&carrier=ID&date_flexibility=fixed", arg0.getDep(), arg0.getArr(),toddmm,backddmm);
-		Protocol myhttps = new Protocol("https", new MySSLProtocolSocketFactory(), 443);   
-		Protocol.registerProtocol("https", myhttps);   
+//		Protocol myhttps = new Protocol("https", new MySSLProtocolSocketFactory(), 443);   
+//		Protocol.registerProtocol("https", myhttps);   
 		get = new QFGetMethod(getUrl);
 		get.setRequestHeader("Referer", "http://www.batikair.com/");
 		get.setFollowRedirects(false);
