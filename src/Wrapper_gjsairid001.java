@@ -73,8 +73,8 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 		String backddmm=backdeptDate[2]+backdeptDate[1];
 		
 		String getUrl = String.format("https://secure.batikair.com/BatikAirIBE/onlinebooking.aspx?trip_type=return&persons.0=1&persons.1=0&persons.2=0&depart=%s&dest.1=%s&date.0=%s&date.1=%s&origin=EN&usercountry=ID&carrier=ID&date_flexibility=fixed", arg0.getDep(), arg0.getArr(),toddmm,backddmm);
-//		Protocol myhttps = new Protocol("https", new MySSLProtocolSocketFactory(), 443);   
-//		Protocol.registerProtocol("https", myhttps);   
+		Protocol myhttps = new Protocol("https", new MySSLProtocolSocketFactory(), 443);   
+		Protocol.registerProtocol("https", myhttps);   
 		get = new QFGetMethod(getUrl);
 		get.setRequestHeader("Referer", "http://www.batikair.com/");
 		get.setFollowRedirects(false);
@@ -168,6 +168,8 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 //						topromoTotal=StringUtils.substringBetween(toinfo[7],"<br />","</label>");
 						topromoPrice=unitPrice[1].trim();
 						topromotax=Double.valueOf(StringUtils.substringBetween(toinfo[7],"Fees:","\"><input").replace(tounit, "").replace(",", "").trim())+t1;
+					}else{
+						continue;
 					}
 					
 					FlightSegement toseg = new FlightSegement();
@@ -208,6 +210,7 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 						baseFlight.getDetail().getFlightno().addAll(toflightNoList);
 						m--;
 					}
+				boolean retflag=false;
 				if(m==0){//m为0时去航班中转结束
 					String backflightsstr=backhtml.substring(backhtml.indexOf("</tr>")+5, backhtml.lastIndexOf("<tr>"));
 					String[] backflights=backflightsstr.split("<tr");
@@ -254,8 +257,10 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 //							backpromoTotal=StringUtils.substringBetween(backinfo[7],"<br />","</label>");
 							backpromoPrice=backunitPrice[1].trim();
 							backpromotax=Double.parseDouble(StringUtils.substringBetween(backinfo[6],"Fees:","\"><input").replace(backunit, "").replace(",", "").trim())+t2;
+						}else{
+							continue;
 						}
-						
+						retflag=true;
 						FlightSegement backseg = new FlightSegement();
 						backseg.setFlightno(backflightNumbe);
 						backseg.setDepDate(arg1.getRetDate());
@@ -333,8 +338,8 @@ public class Wrapper_gjsairid001 implements QunarCrawler{
 		FlightSearchParam searchParam = new FlightSearchParam();
 		searchParam.setDep("CGK");//SUB
 		searchParam.setArr("SUB");//SOQ
-		searchParam.setDepDate("2014-07-24");
-		searchParam.setRetDate("2014-07-28");
+		searchParam.setDepDate("2014-06-27");
+		searchParam.setRetDate("2014-06-28");
 		searchParam.setTimeOut("60000");
 		searchParam.setWrapperid("gjsairid001");
 		searchParam.setToken("");
