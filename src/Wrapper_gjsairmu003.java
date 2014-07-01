@@ -272,7 +272,7 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 								toflightDetail.setDepcity(arg1.getDep());
 								toflightDetail.setDepdate(Date.valueOf(arg1.getDepDate()));
 								toflightDetail.setFlightno(flightNoList);
-								toflightDetail.setMonetaryunit(monetaryunit);
+								toflightDetail.setMonetaryunit("TWD");
 								toflightDetail.setWrapperid(arg1.getWrapperid());
 								toflightDetail.setPrice(retprices+prices);
 								toflightDetail.setTax(rettaxs+taxs);

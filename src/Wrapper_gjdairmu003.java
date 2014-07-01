@@ -202,7 +202,7 @@ public class Wrapper_gjdairmu003 implements QunarCrawler {
 								.setDepdate(Date.valueOf(arg1.getDepDate()));
 						flightDetail.setPrice(prices);
 						flightDetail.setTax(taxs);
-						flightDetail.setMonetaryunit(monetaryunit);
+						flightDetail.setMonetaryunit("TWD");
 						flightDetail.setFlightno(flightNoList);
 						flightDetail.setWrapperid(arg1.getWrapperid());
 						baseFlight.setDetail(flightDetail);
