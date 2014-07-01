@@ -34,7 +34,7 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 			bookingInfo.setAction(bookingUrlPre);
 			bookingInfo.setMethod("get");
 			Map<String, String> map = new LinkedHashMap<String, String>();
-			map.put("cond.tripType", "OW");
+			map.put("cond.tripType", "RT");
 			map.put("cond.depCode",  arg0.getDep());
 			map.put("cond.arrCode", arg0.getArr());
 			map.put("cond.routeType", "3");
