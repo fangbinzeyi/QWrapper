@@ -81,12 +81,6 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 			result.setStatus(Constants.CONNECTION_FAIL);
 			return result;			
 		}		
-		//需要有明显的提示语句，才能判断是否INVALID_DATE|INVALID_AIRLINE|NO_RESULT
-		if (html.contains("Today Flight is full, select an other day or check later for any seat released. ")) {
-			result.setRet(false);
-			result.setStatus(Constants.INVALID_DATE);
-			return result;			
-		}
 		String deptable= StringUtils.substringBetween(html, "<table","</table>");
 		deptable=StringUtils.substringAfterLast(deptable, "</thead>").replace("\r\n","").trim();
 		String rettable=StringUtils.substringAfterLast(html, "<div class=\"body\">").replace("\r\n","").trim();
@@ -256,7 +250,7 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 										}
 										retflightNoList.add(retflightNo);
 										retseg.setFlightno(retflightNo);
-										retseg.setDepDate(arg1.getDepDate());
+										retseg.setDepDate(arg1.getRetDate());
 										retseg.setDeptime(retdatetime[0].trim());
 										retseg.setArrtime(retarrdatetime[0].trim());
 										retseg.setCompany(retflightNo.substring(0, 2));
