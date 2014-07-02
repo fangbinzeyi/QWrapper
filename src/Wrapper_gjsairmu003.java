@@ -82,6 +82,7 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 			return result;			
 		}		
 		String deptable= StringUtils.substringBetween(html, "<table","</table>");
+		System.out.println();
 		deptable=StringUtils.substringAfterLast(deptable, "</thead>").replace("\r\n","").trim();
 		String rettable=StringUtils.substringAfterLast(html, "<div class=\"body\">").replace("\r\n","").trim();
 		List<RoundTripFlightInfo> flightList = new ArrayList<RoundTripFlightInfo>();
