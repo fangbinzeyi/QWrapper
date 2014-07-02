@@ -349,7 +349,7 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 		searchParam.setDepDate("2014-07-18");
 		searchParam.setRetDate("2014-07-24");
 		searchParam.setTimeOut("60000");
-		searchParam.setWrapperid("gjdairmu003");
+		searchParam.setWrapperid("gjsairmu003");
 		searchParam.setToken("");
 		Wrapper_gjsairmu003 gjsairmu003=new Wrapper_gjsairmu003();
 		String html = gjsairmu003.getHtml(searchParam);
