@@ -16,7 +16,6 @@ import com.qunar.qfwrapper.bean.booking.BookingResult;
 import com.qunar.qfwrapper.bean.search.FlightDetail;
 import com.qunar.qfwrapper.bean.search.FlightSearchParam;
 import com.qunar.qfwrapper.bean.search.FlightSegement;
-import com.qunar.qfwrapper.bean.search.OneWayFlightInfo;
 import com.qunar.qfwrapper.bean.search.ProcessResultInfo;
 import com.qunar.qfwrapper.bean.search.RoundTripFlightInfo;
 import com.qunar.qfwrapper.constants.Constants;
@@ -151,23 +150,12 @@ public class Wrapper_gjsair5n001 implements QunarCrawler {
 				}
 			}
 			
-//			for(int j=0;j<flightVariants.length;j++){
-//				String privceKey=StringUtils.substringBefore(flightVariants[j], ":");
-//				String[] flightKeyStr=StringUtils.substringAfter(flightVariants[j]+"}", "{").split(",");
-//				for(int m=0;m<flightKeyStr.length;m++){
-//					String[] flightKey=flightKeyStr[m].split(":");
-//					System.out.println(flightKey[0].trim());
-//					
-//				}
-//				
-//			}
 			String [] flights=flightHtml.split("</tbody>");
 			for(int i=0;i<flights.length;i++){
 				if(null!=flights[i]&&!"".equals(flights[i])){
 					
 					List<FlightSegement> segs = new ArrayList<FlightSegement>();
 					List<String> flightNoList = new ArrayList<String>();
-//					String[] info=null;
 					String id="";
 					String flightNo="";
 					//判读往航是否中转
@@ -183,6 +171,18 @@ public class Wrapper_gjsair5n001 implements QunarCrawler {
 					FlightSegement seg = new FlightSegement();
 					seg.setFlightno(flightNo);
 					seg.setDepDate(arg1.getDepDate());
+					if(!td[4].contains("up-small")){
+						seg.setArrDate(arg1.getDepDate());
+					}else{
+						String day=StringUtils.substringBetween(td[4], "up-small\">", "</span>").replace("+", "");
+						Date depDate=Date.valueOf(arg1.getDepDate());
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(Date.valueOf(arg1.getDepDate()));
+						cal.add(Calendar.DAY_OF_MONTH, Integer.parseInt(day));
+						SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+						String dateString = formatter.format(cal.getTime());
+						seg.setArrDate(dateString);
+					}
 					seg.setCompany(flightNo.substring(0, 2));
 					seg.setDepairport(arg1.getDep());
 					seg.setArrairport(arg1.getArr());
@@ -279,6 +279,18 @@ public class Wrapper_gjsair5n001 implements QunarCrawler {
 						FlightSegement retseg = new FlightSegement();
 						retseg.setFlightno(retflightNo);
 						retseg.setDepDate(arg1.getRetDate());
+						if(!rettd[4].contains("up-small")){
+							retseg.setArrDate(arg1.getDepDate());
+						}else{
+							String day=StringUtils.substringBetween(rettd[4], "up-small\">", "</span>").replace("+", "");
+							Date depDate=Date.valueOf(arg1.getDepDate());
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(Date.valueOf(arg1.getDepDate()));
+							cal.add(Calendar.DAY_OF_MONTH, Integer.parseInt(day));
+							SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+							String dateString = formatter.format(cal.getTime());
+							retseg.setArrDate(dateString);
+						}
 						retseg.setCompany(retflightNo.substring(0, 2));
 						retseg.setDepairport(arg1.getArr());
 						retseg.setArrairport(arg1.getDep());
