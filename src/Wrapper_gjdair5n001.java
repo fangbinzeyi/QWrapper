@@ -36,22 +36,22 @@ public class Wrapper_gjdair5n001 implements QunarCrawler {
 	@Override
 	public BookingResult getBookingInfo(FlightSearchParam arg0) {
 		BookingResult bookingResult = new BookingResult();
-		httpClient=new QFHttpClient(arg0, false);
-		httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
+//		httpClient=new QFHttpClient(arg0, false);
+//		httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 		String bookingUrlPre = "http://booking.nordavia.ru/en/indexformprocessing";
 		Map citymap=getCity();
 		BookingInfo bookingInfo = new BookingInfo();
 		bookingInfo.setAction(bookingUrlPre);
 		bookingInfo.setMethod("post");
-		Map<String, String> map = new LinkedHashMap<String, String>();
-		map.put("origin-city-name", map.get(arg0.getArr()).toString());
-		map.put("destination-city-name",map.get(arg0.getDep()).toString());
-		map.put("there-date", arg0.getDepDate().replaceAll("(....)-(..)-(..)", "$3.$2.$1"));
-		map.put("count-aaa", "1");
-		map.put("count-rbg", "0");
-		map.put("count-rmg", "0");
-		map.put("pricetable", "Continue");
-		bookingInfo.setInputs(map);		
+		Map<String, String> paramap = new LinkedHashMap<String, String>();
+		paramap.put("origin-city-name", map.get(arg0.getArr().trim()));
+		paramap.put("destination-city-name",map.get(arg0.getDep().trim()));
+		paramap.put("there-date", arg0.getDepDate().replaceAll("(....)-(..)-(..)", "$3.$2.$1"));
+		paramap.put("count-aaa", "1");
+		paramap.put("count-rbg", "0");
+		paramap.put("count-rmg", "0");
+		paramap.put("pricetable", "Continue");
+		bookingInfo.setInputs(paramap);		
 		bookingResult.setData(bookingInfo);
 		bookingResult.setRet(true);
 		return bookingResult;
@@ -70,7 +70,7 @@ public class Wrapper_gjdair5n001 implements QunarCrawler {
 			
 			post = new QFPostMethod(postUrl);
 			NameValuePair[] pairs = new NameValuePair[]{
-					new NameValuePair("origin-city-name", map.get(arg0.getDep()).toString()),//origin
+					new NameValuePair("origin-city-name", map.get(arg0.getDep())),//origin
 					new NameValuePair("destination-city-name", map.get(arg0.getArr()).toString()),//destination
 					new NameValuePair("there-date", arg0.getDepDate().replaceAll("(....)-(..)-(..)", "$3.$2.$1")),
 					new NameValuePair("count-aaa", "1"),
