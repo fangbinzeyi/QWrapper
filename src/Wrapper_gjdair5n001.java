@@ -24,7 +24,7 @@ import com.qunar.qfwrapper.util.QFGetMethod;
 import com.qunar.qfwrapper.util.QFHttpClient;
 import com.qunar.qfwrapper.util.QFPostMethod;
 /**
- * 诺达维亚
+ * 诺达维亚航空
  * http://www.nordavia.ru/en/
  * @author Administrator
  *
@@ -65,9 +65,11 @@ public class Wrapper_gjdair5n001 implements QunarCrawler {
 		QFPostMethod post=null;
 		try{
 			httpClient=new QFHttpClient(arg0, false);
-			map=getCity();
+			
 			httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
+			map=getCity();
 			String postUrl="http://booking.nordavia.ru/en/indexformprocessing";
+			
 			post = new QFPostMethod(postUrl);
 			NameValuePair[] pairs = new NameValuePair[]{
 					new NameValuePair("origin-city-name", map.get(arg0.getDep()).toString()),//origin
@@ -299,15 +301,33 @@ public class Wrapper_gjdair5n001 implements QunarCrawler {
 		}
 		return "Exception";
 	}
-	public Map getCity() {
-		String html = resquestCity();
-		Map citymap = new HashMap();
-		String[] results_html = StringUtils.substringAfterLast(html, "{").replace("}", "").replace("\"", "").split(",");
-		for (int i = 0; i < results_html.length - 1; i++) {
-			String[] array= results_html[i].trim().split(":");
-			citymap.put(array[1].trim(), array[0].trim());
-		}
-		return citymap;
+//	public Map getCity() {
+//		String html = resquestCity();
+//		Map citymap = new HashMap();
+//		String[] results_html = StringUtils.substringAfterLast(html, "{").replace("}", "").replace("\"", "").split(",");
+//		for (int i = 0; i < results_html.length - 1; i++) {
+//			String[] array= results_html[i].trim().split(":");
+//			citymap.put(array[1].trim(), array[0].trim());
+//		}
+//		//{KRR=Krasnodar, AMV=Amderma, AAQ=Anapa, ARH=Arkhangelsk, MMK=Murmansk, NNM=Naryan-Mar, LED=St Petersburg, AER=Sochi, SCW=Syktyvkar, TOS=Tromso, KGD=Kaliningrad, MOW=Moscow, CSH=Solovetsky}
+//		return citymap;
+//	}
+	public Map getCity(){
+		map = new HashMap();
+		map.put("KRR", "Krasnodar");
+		map.put("AMV", "Amderma");
+		map.put("AAQ", "Anapa");
+		map.put("ARH", "Arkhangelsk");
+		map.put("MMK", "Murmansk");
+		map.put("NNM", "Naryan-Mar");
+		map.put("LED", "St Petersburg");
+		map.put("AER", "Sochi");
+		map.put("SCW", "Syktyvkar");
+		map.put("TOS", "Tromso");
+		map.put("KGD", "Kaliningrad");
+		map.put("MOW", "Moscow");
+		map.put("CSH", "Solovetsky");
+		return map;
 	}
 
 	public static void main(String[] args) {
