@@ -39,8 +39,6 @@ public class Wrapper_gjdair5n001 implements QunarCrawler {
 		httpClient=new QFHttpClient(arg0, false);
 		httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 		String bookingUrlPre = "http://booking.nordavia.ru/en/indexformprocessing";
-		String[] date=arg0.getDepDate().split("-");
-		String depdate=date[2]+"."+date[1]+"."+date[0];
 		Map citymap=getCity();
 		BookingInfo bookingInfo = new BookingInfo();
 		bookingInfo.setAction(bookingUrlPre);
@@ -48,7 +46,7 @@ public class Wrapper_gjdair5n001 implements QunarCrawler {
 		Map<String, String> map = new LinkedHashMap<String, String>();
 		map.put("origin-city-name", map.get(arg0.getArr()).toString());
 		map.put("destination-city-name",map.get(arg0.getDep()).toString());
-		map.put("there-date", depdate);
+		map.put("there-date", arg0.getDepDate().replaceAll("(....)-(..)-(..)", "$3.$2.$1"));
 		map.put("count-aaa", "1");
 		map.put("count-rbg", "0");
 		map.put("count-rmg", "0");

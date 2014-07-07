@@ -3,6 +3,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.lang.StringUtils;
 
+import com.qunar.qfwrapper.bean.booking.BookingInfo;
 import com.qunar.qfwrapper.bean.booking.BookingResult;
 import com.qunar.qfwrapper.bean.search.FlightDetail;
 import com.qunar.qfwrapper.bean.search.FlightSearchParam;
@@ -34,8 +36,27 @@ public class Wrapper_gjsair5n001 implements QunarCrawler {
 	Map<String,String> map=null;
 	@Override
 	public BookingResult getBookingInfo(FlightSearchParam arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		BookingResult bookingResult = new BookingResult();
+		httpClient=new QFHttpClient(arg0, false);
+		httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
+		String bookingUrlPre = "http://booking.nordavia.ru/en/indexformprocessing";
+		Map citymap=getCity();
+		BookingInfo bookingInfo = new BookingInfo();
+		bookingInfo.setAction(bookingUrlPre);
+		bookingInfo.setMethod("post");
+		Map<String, String> map = new LinkedHashMap<String, String>();
+		map.put("origin-city-name", map.get(arg0.getArr()).toString());
+		map.put("destination-city-name",map.get(arg0.getDep()).toString());
+		map.put("there-date", arg0.getDepDate().replaceAll("(....)-(..)-(..)", "$3.$2.$1"));
+		map.put("back-date", arg0.getRetDate().replaceAll("(....)-(..)-(..)", "$3.$2.$1"));
+		map.put("count-aaa", "1");
+		map.put("count-rbg", "0");
+		map.put("count-rmg", "0");
+		map.put("pricetable", "Continue");
+		bookingInfo.setInputs(map);		
+		bookingResult.setData(bookingInfo);
+		bookingResult.setRet(true);
+		return bookingResult;
 	}
 
 	@Override
