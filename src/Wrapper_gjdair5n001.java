@@ -162,6 +162,18 @@ public class Wrapper_gjdair5n001 implements QunarCrawler {
 					FlightSegement seg = new FlightSegement();
 					seg.setFlightno(flightNo);
 					seg.setDepDate(arg1.getDepDate());
+					if(!td[4].contains("up-small")){
+						seg.setArrDate(arg1.getDepDate());
+					}else{
+						String day=StringUtils.substringBetween(td[4], "up-small\">", "</span>").replace("+", "");
+						Date depDate=Date.valueOf(arg1.getDepDate());
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(Date.valueOf(arg1.getDepDate()));
+						cal.add(Calendar.DAY_OF_MONTH, Integer.parseInt(day));
+						SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+						String dateString = formatter.format(cal.getTime());
+						seg.setArrDate(dateString);
+					}
 					seg.setCompany(flightNo.substring(0, 2));
 					seg.setDepairport(arg1.getDep());
 					seg.setArrairport(arg1.getArr());
