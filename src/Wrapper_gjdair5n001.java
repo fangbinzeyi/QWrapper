@@ -23,6 +23,7 @@ import com.qunar.qfwrapper.interfaces.QunarCrawler;
 import com.qunar.qfwrapper.util.QFGetMethod;
 import com.qunar.qfwrapper.util.QFHttpClient;
 import com.qunar.qfwrapper.util.QFPostMethod;
+import com.travelco.rdf.infocenter.InfoCenter;
 /**
  * 诺达维亚航空
  * http://www.nordavia.ru/en/
@@ -39,13 +40,31 @@ public class Wrapper_gjdair5n001 implements QunarCrawler {
 //		httpClient=new QFHttpClient(arg0, false);
 //		httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 		String bookingUrlPre = "http://booking.nordavia.ru/en/indexformprocessing";
-		Map citymap=getCity();
+		map=getCity();
+		String depCity="";
+		String arrCity="";
+		if(null!=map.get(arg0.getDep())){
+			depCity=map.get(arg0.getDep());
+		}else{
+			depCity=InfoCenter.getCityFromAnyCode(arg0.getDep(), "en");
+			if(depCity.length()==3){
+				depCity=InfoCenter.getCityFromAnyCode(depCity, "en");
+			}
+		}
+		if(null!=map.get(arg0.getArr())){
+			arrCity=map.get(arg0.getArr());
+		}else{
+			arrCity=InfoCenter.getCityFromAnyCode(arg0.getArr(), "en");
+			if(arrCity.length()==3){
+				arrCity=InfoCenter.getCityFromAnyCode(arrCity, "en");
+			}
+		}
 		BookingInfo bookingInfo = new BookingInfo();
 		bookingInfo.setAction(bookingUrlPre);
 		bookingInfo.setMethod("post");
 		Map<String, String> paramap = new LinkedHashMap<String, String>();
-		paramap.put("origin-city-name", map.get(arg0.getArr().trim()));
-		paramap.put("destination-city-name",map.get(arg0.getDep().trim()));
+		paramap.put("origin-city-name", depCity);
+		paramap.put("destination-city-name",arrCity);
 		paramap.put("there-date", arg0.getDepDate().replaceAll("(....)-(..)-(..)", "$3.$2.$1"));
 		paramap.put("count-aaa", "1");
 		paramap.put("count-rbg", "0");
@@ -63,15 +82,32 @@ public class Wrapper_gjdair5n001 implements QunarCrawler {
 		QFPostMethod post=null;
 		try{
 			httpClient=new QFHttpClient(arg0, false);
-			
 			httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 			map=getCity();
+			String depCity="";
+			String arrCity="";
+			if(null!=map.get(arg0.getDep())){
+				depCity=map.get(arg0.getDep());
+			}else{
+				depCity=InfoCenter.getCityFromAnyCode(arg0.getDep(), "en");
+				if(depCity.length()==3){
+					depCity=InfoCenter.getCityFromAnyCode(depCity, "en");
+				}
+			}
+			if(null!=map.get(arg0.getArr())){
+				arrCity=map.get(arg0.getArr());
+			}else{
+				arrCity=InfoCenter.getCityFromAnyCode(arg0.getArr(), "en");
+				if(arrCity.length()==3){
+					arrCity=InfoCenter.getCityFromAnyCode(arrCity, "en");
+				}
+			}
 			String postUrl="http://booking.nordavia.ru/en/indexformprocessing";
 			
 			post = new QFPostMethod(postUrl);
 			NameValuePair[] pairs = new NameValuePair[]{
-					new NameValuePair("origin-city-name", map.get(arg0.getDep())),//origin
-					new NameValuePair("destination-city-name", map.get(arg0.getArr()).toString()),//destination
+					new NameValuePair("origin-city-name", depCity),//origin
+					new NameValuePair("destination-city-name", arrCity),//destination
 					new NameValuePair("there-date", arg0.getDepDate().replaceAll("(....)-(..)-(..)", "$3.$2.$1")),
 					new NameValuePair("count-aaa", "1"),
 					new NameValuePair("count-rbg", "0"),
@@ -143,9 +179,9 @@ public class Wrapper_gjdair5n001 implements QunarCrawler {
 			}
 			
 		}
-		String [] flights=flightHtml.split("</tbody>");
+		String [] flights=flightHtml.replace("<!-- Ð ÐµÐ¹ÑÑ ÑÑÐ´Ð° : ÐºÐ¾Ð½ÐµÑ-->", "").split("</tbody>");
 		for(int i=0;i<flights.length;i++){
-			if(null!=flights[i]&&!"".equals(flights[i])){
+			if(null!=flights[i]&&!"".equals(flights[i].replace(" ", ""))){
 				//判读是否中转
 				if(!flights[i].contains("Route through city")){
 					List<FlightSegement> segs = new ArrayList<FlightSegement>();
@@ -344,7 +380,7 @@ public class Wrapper_gjdair5n001 implements QunarCrawler {
 		FlightSearchParam searchParam = new FlightSearchParam();
 		searchParam.setDep("ARH");
 		searchParam.setArr("MOW");
-		searchParam.setDepDate("2014-07-18");
+		searchParam.setDepDate("2014-09-07");
 		searchParam.setTimeOut("60000");
 		searchParam.setWrapperid("gjdair5n001");
 		searchParam.setToken("");

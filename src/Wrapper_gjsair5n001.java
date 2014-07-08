@@ -23,6 +23,7 @@ import com.qunar.qfwrapper.interfaces.QunarCrawler;
 import com.qunar.qfwrapper.util.QFGetMethod;
 import com.qunar.qfwrapper.util.QFHttpClient;
 import com.qunar.qfwrapper.util.QFPostMethod;
+import com.travelco.rdf.infocenter.InfoCenter;
 
 /**
  * 
@@ -39,13 +40,31 @@ public class Wrapper_gjsair5n001 implements QunarCrawler {
 		httpClient=new QFHttpClient(arg0, false);
 		httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 		String bookingUrlPre = "http://booking.nordavia.ru/en/indexformprocessing";
-		Map citymap=getCity();
+		map=getCity();
+		String depCity="";
+		String arrCity="";
+		if(null!=map.get(arg0.getDep())){
+			depCity=map.get(arg0.getDep());
+		}else{
+			depCity=InfoCenter.getCityFromAnyCode(arg0.getDep(), "en");
+			if(depCity.length()==3){
+				depCity=InfoCenter.getCityFromAnyCode(depCity, "en");
+			}
+		}
+		if(null!=map.get(arg0.getArr())){
+			arrCity=map.get(arg0.getArr());
+		}else{
+			arrCity=InfoCenter.getCityFromAnyCode(arg0.getArr(), "en");
+			if(arrCity.length()==3){
+				arrCity=InfoCenter.getCityFromAnyCode(arrCity, "en");
+			}
+		}
 		BookingInfo bookingInfo = new BookingInfo();
 		bookingInfo.setAction(bookingUrlPre);
 		bookingInfo.setMethod("post");
 		Map<String, String> paramap = new LinkedHashMap<String, String>();
-		paramap.put("origin-city-name", map.get(arg0.getArr()).toString());
-		paramap.put("destination-city-name",map.get(arg0.getDep()).toString());
+		paramap.put("origin-city-name", depCity);
+		paramap.put("destination-city-name",arrCity);
 		paramap.put("there-date", arg0.getDepDate().replaceAll("(....)-(..)-(..)", "$3.$2.$1"));
 		paramap.put("back-date", arg0.getRetDate().replaceAll("(....)-(..)-(..)", "$3.$2.$1"));
 		paramap.put("count-aaa", "1");
@@ -65,12 +84,31 @@ public class Wrapper_gjsair5n001 implements QunarCrawler {
 		try{
 			httpClient=new QFHttpClient(arg0, false);
 			map=getCity();
+			String depCity="";
+			String arrCity="";
+			if(null!=map.get(arg0.getDep())){
+				depCity=map.get(arg0.getDep());
+			}else{
+				depCity=InfoCenter.getCityFromAnyCode(arg0.getDep(), "en");
+				if(depCity.length()==3){
+					depCity=InfoCenter.getCityFromAnyCode(depCity, "en");
+				}
+			}
+			if(null!=map.get(arg0.getArr())){
+				arrCity=map.get(arg0.getArr());
+			}else{
+				arrCity=InfoCenter.getCityFromAnyCode(arg0.getArr(), "en");
+				if(arrCity.length()==3){
+					arrCity=InfoCenter.getCityFromAnyCode(arrCity, "en");
+				}
+			}
+			
 			httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 			String postUrl="http://booking.nordavia.ru/en/indexformprocessing";
 			post = new QFPostMethod(postUrl);
 			NameValuePair[] pairs = new NameValuePair[]{
-					new NameValuePair("origin-city-name", map.get(arg0.getDep()).toString()),//origin
-					new NameValuePair("destination-city-name", map.get(arg0.getArr()).toString()),//destination
+					new NameValuePair("origin-city-name",depCity),//origin
+					new NameValuePair("destination-city-name", arrCity),//destination
 					new NameValuePair("there-date", arg0.getDepDate().replaceAll("(....)-(..)-(..)", "$3.$2.$1")),
 					new NameValuePair("back-date", arg0.getRetDate().replaceAll("(....)-(..)-(..)", "$3.$2.$1")),
 					new NameValuePair("use-back", "1"),
@@ -150,9 +188,9 @@ public class Wrapper_gjsair5n001 implements QunarCrawler {
 				}
 			}
 			
-			String [] flights=flightHtml.split("</tbody>");
+			String [] flights=flightHtml.replace("<!-- Ð ÐµÐ¹ÑÑ ÑÑÐ´Ð° : ÐºÐ¾Ð½ÐµÑ-->", "").split("</tbody>");
 			for(int i=0;i<flights.length;i++){
-				if(null!=flights[i]&&!"".equals(flights[i])){
+				if(null!=flights[i]&&!"".equals(flights[i].trim())){
 					
 					List<FlightSegement> segs = new ArrayList<FlightSegement>();
 					List<String> flightNoList = new ArrayList<String>();
@@ -463,7 +501,7 @@ public class Wrapper_gjsair5n001 implements QunarCrawler {
 	public static void main(String[] args) {
 		FlightSearchParam searchParam = new FlightSearchParam();
 		searchParam.setDep("ARH");
-		searchParam.setArr("MOW");
+		searchParam.setArr("MOW");//SVO
 		searchParam.setDepDate("2014-07-18");
 		searchParam.setRetDate("2014-07-22");
 		searchParam.setTimeOut("60000");
@@ -471,7 +509,7 @@ public class Wrapper_gjsair5n001 implements QunarCrawler {
 		searchParam.setToken("");
 		Wrapper_gjsair5n001 gjsair5n001=new  Wrapper_gjsair5n001();
 		String html = gjsair5n001.getHtml(searchParam);
-//		System.out.println(html);
+		System.out.println(html);
 		ProcessResultInfo result = new ProcessResultInfo();
 		result = gjsair5n001.process(html,searchParam);
 		if(result.isRet() && result.getStatus().equals(Constants.SUCCESS))
