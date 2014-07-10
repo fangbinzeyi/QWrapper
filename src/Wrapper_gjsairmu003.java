@@ -241,7 +241,7 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 													retprices+=Double.parseDouble(retprice.replace(",", ""));
 												}
 												if(null!=rettax&&!"".equals(rettax)){
-													rettax+=Double.parseDouble(rettax.replace(",", ""));
+													rettaxs+=Double.parseDouble(rettax.replace(",", ""));
 												}
 											}
 										}else{
