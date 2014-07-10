@@ -20,7 +20,10 @@ import com.qunar.qfwrapper.constants.Constants;
 import com.qunar.qfwrapper.interfaces.QunarCrawler;
 import com.qunar.qfwrapper.util.QFGetMethod;
 import com.qunar.qfwrapper.util.QFHttpClient;
-
+/**
+ * 中国东方航空
+ * http://tw.ceair.com/
+ */
 
 public class Wrapper_gjsairmu003 implements QunarCrawler {
 	QFHttpClient httpClient =null;
@@ -36,7 +39,9 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 			Map<String, String> map = new LinkedHashMap<String, String>();
 			map.put("cond.tripType", "RT");
 			map.put("cond.depCode",  arg0.getDep());
+//			map.put("cond.depCode_reveal",  "東京成田");
 			map.put("cond.arrCode", arg0.getArr());
+//			map.put("cond.arrCode_reveal", "北京首都機場");
 			map.put("cond.routeType", "3");
 			map.put("cond.cabinRank", "ECONOMY");
 			map.put("depDate", arg0.getDepDate());
@@ -74,17 +79,15 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 
 	@Override
 	public ProcessResultInfo process(String arg0, FlightSearchParam arg1) {
-		String html=StringUtils.substringBetween(arg0, "<form id=\"rtMultiFlightSelect\"", "</form>");
 		ProcessResultInfo result = new ProcessResultInfo();
-		if ("Exception".equals(html)) {	
+		if ("Exception".equals(arg0)) {	
 			result.setRet(false);
 			result.setStatus(Constants.CONNECTION_FAIL);
 			return result;			
 		}		
-		String deptable= StringUtils.substringBetween(html, "<table","</table>");
-		System.out.println();
+		String deptable= StringUtils.substringBetween(arg0, "<div class=\"routing\">","</table>");
 		deptable=StringUtils.substringAfterLast(deptable, "</thead>").replace("\r\n","").trim();
-		String rettable=StringUtils.substringAfterLast(html, "<div class=\"body\">").replace("\r\n","").trim();
+		String rettable=StringUtils.substringAfterLast(arg0, "<div class=\"flight_table rt_back\"").replace("\r\n","").trim();
 		List<RoundTripFlightInfo> flightList = new ArrayList<RoundTripFlightInfo>();
 		try {
 			if(null!=deptable&&!"".equals(deptable)){
@@ -182,7 +185,7 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 						//返回
 						String[] retdiv=rettable.split("<div class=\"flight_table rt_back\"");
 						for(int m=0;m<retdiv.length;m++){
-							if(null!=retdiv[m]&&!"".equals(retdiv[m])&&retdiv[m].contains("style=''")){
+							if(null!=retdiv[m]&&!"".equals(retdiv[m])){
 								
 								String retbody[]=StringUtils.substringAfterLast(retdiv[m], "</thead>").replace("\r\n","").trim().split("<tbody>");
 								for(int z=0;z<retbody.length;z++){
@@ -345,10 +348,10 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 
 	public static void main(String[] args) {
 		FlightSearchParam searchParam = new FlightSearchParam();
-		searchParam.setDep("TPE");
-		searchParam.setArr("JZH");
-		searchParam.setDepDate("2014-07-18");
-		searchParam.setRetDate("2014-07-24");
+		searchParam.setDep("NRT");
+		searchParam.setArr("PEK");
+		searchParam.setDepDate("2014-08-16");
+		searchParam.setRetDate("2014-08-23");
 		searchParam.setTimeOut("60000");
 		searchParam.setWrapperid("gjsairmu003");
 		searchParam.setToken("");
