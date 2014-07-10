@@ -37,8 +37,8 @@ public class Wrapper_gjsair5n001 implements QunarCrawler {
 	@Override
 	public BookingResult getBookingInfo(FlightSearchParam arg0) {
 		BookingResult bookingResult = new BookingResult();
-		httpClient=new QFHttpClient(arg0, false);
-		httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
+//		httpClient=new QFHttpClient(arg0, false);
+//		httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 		String bookingUrlPre = "http://booking.nordavia.ru/en/indexformprocessing";
 		map=getCity();
 		String depCity="";
@@ -70,6 +70,7 @@ public class Wrapper_gjsair5n001 implements QunarCrawler {
 		paramap.put("count-aaa", "1");
 		paramap.put("count-rbg", "0");
 		paramap.put("count-rmg", "0");
+		paramap.put("use-back", "1");
 		paramap.put("pricetable", "Continue");
 		bookingInfo.setInputs(paramap);		
 		bookingResult.setData(bookingInfo);
@@ -166,27 +167,45 @@ public class Wrapper_gjsair5n001 implements QunarCrawler {
 			//返回航班信息
 			String retFlightHtml=StringUtils.substringBetween(StringUtils.substringAfterLast(arg0, "<div class=\"headline\">"), "<tbody", "</table>").replace("\n", "").replace(" ", "");
 			
-			Map privceMap=new HashMap();
+//			Map privceMap=new HashMap();
 			//价格的KEY="78262425" Value="new Price('78262425', '5295.00', 'RUB', null, '782', false, true, '5N')"
+			Map flightMap=new HashMap();
 			for(int i=0;i<priceVariants.length;i++){
 				String []priceKV=priceVariants[i].replace("'", "").split(":");
-				privceMap.put(priceKV[0], priceKV[1].trim()+")");
-			}
-			Map flightMap=new HashMap();
-			for(int i=0;i<flightVariants.length;i++){
-				String privceKey=StringUtils.substringBefore(flightVariants[i], ":");
-				String[] flightlistStr=StringUtils.substringAfter(flightVariants[i]+"}", "{").split("},");
-				for(int m=0;m<flightlistStr.length;m++){
-					String forwardkey=StringUtils.substringBefore(flightlistStr[m], ":");
-					String[] backkeys=StringUtils.substringBetween(flightlistStr[m]+"}", ":{","}").split(",");
-					for(int j=0;j<backkeys.length;j++){
-						String backkey=StringUtils.substringBefore(backkeys[j], ":");
-						if(null!=privceMap.get(privceKey)&&null==flightMap.get(forwardkey+"||"+backkey)){
-							flightMap.put(forwardkey+"||"+backkey, privceMap.get(privceKey));
+//				privceMap.put(priceKV[0], priceKV[1].trim()+")");
+				for(int k=0;k<flightVariants.length;k++){
+					String privceKey=StringUtils.substringBefore(flightVariants[k], ":");
+					if(privceKey.equals(priceKV[0])){
+						String[] flightlistStr=StringUtils.substringAfter(flightVariants[k]+"}", "{").split("},");
+						for(int m=0;m<flightlistStr.length;m++){
+							String forwardkey=StringUtils.substringBefore(flightlistStr[m], ":");
+							String[] backkeys=StringUtils.substringBetween(flightlistStr[m]+"}", ":{","}").split(",");
+							for(int j=0;j<backkeys.length;j++){
+								String backkey=StringUtils.substringBefore(backkeys[j], ":");
+								if(null==flightMap.get(forwardkey+"||"+backkey)){
+									flightMap.put(forwardkey+"||"+backkey, priceKV[1].trim()+")");
+								}
+							}
 						}
 					}
+					
 				}
 			}
+			
+//			for(int i=0;i<flightVariants.length;i++){
+//				String privceKey=StringUtils.substringBefore(flightVariants[i], ":");
+//				String[] flightlistStr=StringUtils.substringAfter(flightVariants[i]+"}", "{").split("},");
+//				for(int m=0;m<flightlistStr.length;m++){
+//					String forwardkey=StringUtils.substringBefore(flightlistStr[m], ":");
+//					String[] backkeys=StringUtils.substringBetween(flightlistStr[m]+"}", ":{","}").split(",");
+//					for(int j=0;j<backkeys.length;j++){
+//						String backkey=StringUtils.substringBefore(backkeys[j], ":");
+//						if(null!=privceMap.get(privceKey)&&null==flightMap.get(forwardkey+"||"+backkey)){
+//							flightMap.put(forwardkey+"||"+backkey, privceMap.get(privceKey));
+//						}
+//					}
+//				}
+//			}
 			
 			String [] flights=flightHtml.replace("<!-- Ð ÐµÐ¹ÑÑ ÑÑÐ´Ð° : ÐºÐ¾Ð½ÐµÑ-->", "").split("</tbody>");
 			for(int i=0;i<flights.length;i++){

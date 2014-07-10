@@ -162,23 +162,39 @@ public class Wrapper_gjdair5n001 implements QunarCrawler {
 		String flightHtml=StringUtils.substringBetween(arg0, "<tbody", "</table>").replace("\n", "").trim();
 		
 		//价格的KEY="78262425" Value="new Price('78262425', '5295.00', 'RUB', null, '782', false, true, '5N')"
-		Map privceMap=new HashMap();
+		Map flightMap=new HashMap();
 		for(int i=0;i<priceVariants.length;i++){
 			String []priceKV=priceVariants[i].replace("'", "").split(":");
-			privceMap.put(priceKV[0], priceKV[1].trim()+")");
-		}
-		Map flightMap=new HashMap();
-		for(int j=0;j<flightVariants.length;j++){
-			String privceKey=StringUtils.substringBefore(flightVariants[j], ":");
-			String[] flightKeyStr=StringUtils.substringAfter(flightVariants[j], "{").split(",");
-			for(int m=0;m<flightKeyStr.length;m++){
-				String[] flightKey=flightKeyStr[m].split(":");
-				if(null!=privceMap.get(privceKey)&&null==flightMap.get(flightKey[0])){
-					flightMap.put(flightKey[0].trim(), privceMap.get(privceKey));
+			for(int j=0;j<flightVariants.length;j++){
+				String privceKey=StringUtils.substringBefore(flightVariants[j], ":");
+				if(privceKey.equals(priceKV[0])){
+					String[] flightKeyStr=StringUtils.substringAfter(flightVariants[j], "{").split(",");
+					for(int m=0;m<flightKeyStr.length;m++){
+						String[] flightKey=flightKeyStr[m].split(":");
+						if(null==flightMap.get(flightKey[0])){
+							flightMap.put(flightKey[0].trim(), priceKV[1].trim());
+						}
+					}
 				}
 			}
-			
 		}
+		
+		
+//		for(int j=0;j<flightVariants.length;j++){
+//			String privceKey=StringUtils.substringBefore(flightVariants[j], ":");
+//			String[] flightKeyStr=StringUtils.substringAfter(flightVariants[j], "{").split(",");
+//			for(int m=0;m<flightKeyStr.length;m++){
+//				String[] flightKey=flightKeyStr[m].split(":");
+//				System.out.println(privceKey);
+//				System.out.println(privceMap.get(privceKey));
+//				System.out.println(flightKey[0]);
+//				System.out.println("------------------------");
+//				if(null!=privceMap.get(privceKey)&&null==flightMap.get(flightKey[0])){
+//					flightMap.put(flightKey[0].trim(), privceMap.get(privceKey));
+//				}
+//			}
+//			
+//		}
 		String [] flights=flightHtml.replace("<!-- Ð ÐµÐ¹ÑÑ ÑÑÐ´Ð° : ÐºÐ¾Ð½ÐµÑ-->", "").split("</tbody>");
 		for(int i=0;i<flights.length;i++){
 			if(null!=flights[i]&&!"".equals(flights[i].replace(" ", ""))){
