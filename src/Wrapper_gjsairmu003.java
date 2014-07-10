@@ -1,4 +1,6 @@
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -173,7 +175,10 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 								
 								flightNoList.add(depflightNo);
 								seg.setFlightno(depflightNo);
-								seg.setDepDate(arg1.getDepDate());
+								String depdate=arg1.getDepDate().substring(0, 4)+"年"+depdatetime[1];
+								String arrdate=arg1.getDepDate().substring(0, 4)+"年"+arrdatetime[1];
+								seg.setDepDate(this.strFormat(depdate,"yyyy年MM月dd日","yyyy-MM-dd"));
+								seg.setArrDate(this.strFormat(arrdate,"yyyy年MM月dd日","yyyy-MM-dd"));
 								seg.setDeptime(depdatetime[0].trim());
 								seg.setArrtime(arrdatetime[0].trim());
 								seg.setCompany(depflightNo.substring(0, 2));
@@ -254,6 +259,10 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 										}
 										retflightNoList.add(retflightNo);
 										retseg.setFlightno(retflightNo);
+										String depdate=arg1.getRetDate().substring(0, 4)+"年"+retdatetime[1];
+										String arrdate=arg1.getRetDate().substring(0, 4)+"年"+retarrdatetime[1];
+										retseg.setDepDate(this.strFormat(depdate,"yyyy年MM月dd日","yyyy-MM-dd"));
+										retseg.setArrDate(this.strFormat(arrdate,"yyyy年MM月dd日","yyyy-MM-dd"));
 										retseg.setDepDate(arg1.getRetDate());
 										retseg.setDeptime(retdatetime[0].trim());
 										retseg.setArrtime(retarrdatetime[0].trim());
@@ -345,7 +354,19 @@ public class Wrapper_gjsairmu003 implements QunarCrawler {
 		}
 		return map;
 	}
-
+	
+	public String strFormat(String datestr,String sFormat,String newFormat){
+		SimpleDateFormat formatter = new SimpleDateFormat(sFormat);
+		SimpleDateFormat newformatter = new SimpleDateFormat(newFormat);
+		String dateString ="";
+		try {
+			java.util.Date theDate = formatter.parse(datestr);
+			dateString = newformatter.format(theDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return dateString;
+	}
 	public static void main(String[] args) {
 		FlightSearchParam searchParam = new FlightSearchParam();
 		searchParam.setDep("NRT");
